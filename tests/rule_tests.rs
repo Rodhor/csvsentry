@@ -3,8 +3,18 @@ use csvsentry::validation::column_types::ColumnType;
 mod common;
 #[test]
 fn test_integer() {
-    let valid_cases = vec!["123", "-12", "012", "0"];
-    let invalid_cases = vec!["12a", "!12", "!_12"];
+    let valid_cases = vec![
+        "",
+        "123",
+        "-12",
+        "012",
+        "0",
+        "-0",
+        "000000000000000000",
+        "-1",
+        "+1",
+    ];
+    let invalid_cases = vec!["12a", "!12", "!_12", "9999999999999999999999999999"];
 
     for val in valid_cases {
         assert!(
@@ -23,8 +33,8 @@ fn test_integer() {
 
 #[test]
 fn test_float() {
-    let valid_cases = vec!["12.0", "12.1", "-12.0", "-.1", "-1", "1"];
-    let invalid_cases = vec!["t12", "t", "12.!", "test"];
+    let valid_cases = vec!["12.0", "12.1", "-12.0", "-.1", "-1", "1", ""];
+    let invalid_cases = vec!["t12", "t", "12.!", "test", "inf", "1e3", "NaN"];
 
     for val in valid_cases {
         assert!(
@@ -58,6 +68,8 @@ fn test_text() {
     let without_invalid_substrings = ColumnType::Text(Vec::new());
 
     let valid_cases = vec![
+        ("", &with_invalid_substrings),
+        ("", &without_invalid_substrings),
         ("123", &with_invalid_substrings),
         ("This is a trick", &with_invalid_substrings),
         ("Herr", &with_invalid_substrings),
@@ -91,6 +103,7 @@ fn test_text() {
 #[test]
 fn test_email() {
     let valid_cases = vec![
+        "",
         "user@example.com",
         "test.name+tag@example.co.uk",
         "12345@example.com",
@@ -127,10 +140,13 @@ fn test_email() {
 #[test]
 fn test_phone() {
     let valid_cases = vec![
+        "",
         "+49 123 456789",
         "+44 20 7946 0999",
         "1234567890",
         "+1 555 0199",
+        "+123",
+        "+ 123",
     ];
 
     let invalid_cases = vec![
@@ -157,7 +173,7 @@ fn test_phone() {
 #[test]
 fn test_salutation() {
     let valid_cases = vec![
-        "Herr", "herr", "HERR", "Frau", "frau", "FRAU", "Firma", "firma", "FIRMA",
+        "", "Herr", "herr", "HERR", "Frau", "frau", "FRAU", "Firma", "firma", "FIRMA",
     ];
 
     let invalid_cases = vec![
@@ -183,11 +199,13 @@ fn test_salutation() {
 #[test]
 fn test_website() {
     let valid_cases = vec![
+        "",
         "www.google.com",
         "https://example.com/",
         "http://example.com",
         "https://www.example.co.uk/path?query=1",
         "https://subdomain.example.org",
+        "http://example.com:8080",
     ];
 
     let invalid_cases = vec![
@@ -201,6 +219,8 @@ fn test_website() {
         "user@example.com",
         "test",
         "random string",
+        "http://user:pass@example.com",
+        "https://example.com.",
     ];
 
     // Valid cases
