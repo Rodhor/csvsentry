@@ -45,12 +45,10 @@ impl ColumnType {
                 }
                 Ok(())
             }
-            ColumnType::Float => {
-                if val.parse::<f64>().is_err() {
-                    return Err(format!("expected float, found: {val}"));
-                }
-                Ok(())
-            }
+            ColumnType::Float => match val.parse::<f64>() {
+                Ok(n) if n.is_finite() && !val.contains('e') && !val.contains('E') => Ok(()),
+                _ => Err(format!("expected float, found: {val}")),
+            },
             ColumnType::Salutation => {
                 let valid_salutations = vec![
                     String::from("herr"),
@@ -117,6 +115,9 @@ impl ColumnType {
                     .host_str()
                     .ok_or_else(|| format!("invalid url: {val}"))?;
                 if host.split('.').any(str::is_empty) {
+                    return Err(format!("invalid URL: {val}"));
+                }
+                if !parsed.username().is_empty() || parsed.password().is_some() {
                     return Err(format!("invalid URL: {val}"));
                 }
                 Ok(())
