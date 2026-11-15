@@ -1,4 +1,7 @@
 use anyhow::Result;
+use url::Url;
+use validator::ValidateEmail;
+
 pub enum ColumnType {
     Text(Vec<String>),
     Integer,
@@ -20,13 +23,14 @@ impl ColumnType {
                 if invalid_strings.is_empty() {
                     return Ok(());
                 }
-                // Keep list of substrings present value
-                let mut contains_invalid = Vec::<String>::new();
-                for s in invalid_strings {
-                    if val.contains(s) {
-                        contains_invalid.push(s.clone());
-                    }
-                }
+
+                // Iterate through the invalid substrings, checking if present in the value
+                let contains_invalid: Vec<String> = invalid_strings
+                    .iter()
+                    .filter(|s| val.contains(s.as_str()))
+                    .cloned()
+                    .collect();
+
                 if !contains_invalid.is_empty() {
                     return Err(format!(
                         "Entry ({val}) contains invalid substrings: {:?}",
@@ -58,7 +62,65 @@ impl ColumnType {
                 }
                 Ok(())
             }
-            _ => Ok(()),
+            ColumnType::Email => {
+                if val.is_empty() {
+                    return Ok(());
+                }
+
+                // Custom logic to define invalid states of the email that are not caught by the validator
+                if val.contains("..")
+                    || val.starts_with('.')
+                    || val.starts_with('@')
+                    || val.contains(".@")
+                {
+                    return Err(format!("invalid email: {val}"));
+                }
+
+                // Use Validator lib to check email with regex
+                if !ValidateEmail::validate_email(&val) {
+                    return Err(format!("invalid email: {val}"));
+                }
+                Ok(())
+            }
+            ColumnType::PhoneNumber => {
+                if val.is_empty() {
+                    return Ok(());
+                }
+
+                let is_valid = val
+                    .chars()
+                    .enumerate()
+                    .all(|(i, c)| c.is_numeric() || c == ' ' || i == 0 && c == '+');
+
+                if !is_valid {
+                    return Err(format!("invalid phone number: {val}"));
+                };
+                Ok(())
+            }
+            ColumnType::Website => {
+                if val.is_empty() {
+                    return Ok(());
+                }
+                let candidate = if val.starts_with("www.") {
+                    format!("https://{val}")
+                } else {
+                    val.to_string()
+                };
+
+                let parsed = Url::parse(&candidate).map_err(|_| format!("invalid URL: {val}"))?;
+
+                if parsed.scheme() != "http" && parsed.scheme() != "https" {
+                    return Err(format!("invalid URL scheme: {val}"));
+                }
+
+                let host = parsed
+                    .host_str()
+                    .ok_or_else(|| format!("invalid url: {val}"))?;
+                if host.split('.').any(str::is_empty) {
+                    return Err(format!("invalid URL: {val}"));
+                }
+                Ok(())
+            }
         }
     }
 }
