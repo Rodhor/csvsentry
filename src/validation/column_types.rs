@@ -3,7 +3,7 @@ use url::Url;
 use validator::ValidateEmail;
 
 pub enum ColumnType {
-    Text(Vec<String>),
+    Text(Option<Vec<String>>),
     Integer,
     Float,
     Email,
@@ -18,12 +18,8 @@ impl ColumnType {
             return Ok(());
         }
         match self {
-            ColumnType::Text(invalid_strings) => {
-                // If no strings are invalid for this text column, skip check entirely
-                if invalid_strings.is_empty() {
-                    return Ok(());
-                }
-
+            ColumnType::Text(None) => return Ok(()),
+            ColumnType::Text(Some(invalid_strings)) => {
                 // Iterate through the invalid substrings, checking if present in the value
                 let contains_invalid: Vec<String> = invalid_strings
                     .iter()

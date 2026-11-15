@@ -64,8 +64,8 @@ fn test_text() {
         String::from("test"),
     ];
 
-    let with_invalid_substrings = ColumnType::Text(invalid_strings.clone());
-    let without_invalid_substrings = ColumnType::Text(Vec::new());
+    let with_invalid_substrings = ColumnType::Text(Some(invalid_strings.clone()));
+    let without_invalid_substrings = ColumnType::Text(None);
 
     let valid_cases = vec![
         ("", &with_invalid_substrings),
