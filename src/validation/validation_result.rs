@@ -28,7 +28,10 @@ pub fn validate_row(row: &Row, config: &ValidationConfig) -> Vec<InvalidValue> {
     let mut invalids = Vec::new();
     for col in &config.columns {
         let value = row.cells.get(col.index).map(String::as_str).unwrap_or("");
-        if let Err(error) = col.expected_type.validate(value) {
+
+        if let Err(error) =
+            validate_required(value, col.required).and_then(|_| col.expected_type.validate(value))
+        {
             invalids.push(InvalidValue {
                 row: row.number,
                 column: col.index,
@@ -39,4 +42,12 @@ pub fn validate_row(row: &Row, config: &ValidationConfig) -> Vec<InvalidValue> {
         }
     }
     invalids
+}
+
+fn validate_required(value: &str, required: bool) -> Result<(), String> {
+    let trimmed = value.trim();
+    if required && trimmed.is_empty() {
+        return Err("required value is missing".to_string());
+    }
+    Ok(())
 }
