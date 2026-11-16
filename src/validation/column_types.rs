@@ -77,16 +77,16 @@ impl ColumnType {
                 Ok(())
             }
             ColumnType::PhoneNumber => {
-                if val.is_empty() {
+                let trimmed = val.trim();
+                if trimmed.is_empty() {
                     return Ok(());
                 }
 
-                let is_valid = val
-                    .chars()
-                    .enumerate()
-                    .all(|(i, c)| c.is_numeric() || c == ' ' || i == 0 && c == '+');
-
-                if !is_valid {
+                let valid_chars = trimmed.chars().enumerate().all(|(i, c)| {
+                    c.is_ascii_digit() || matches!(c, ' ' | '-' | '(' | ')') || (i == 0 && c == '+')
+                });
+                let digit_count = trimmed.chars().filter(|c| c.is_ascii_digit()).count();
+                if !valid_chars || digit_count < 5 {
                     return Err(format!("invalid phone number: {val}"));
                 };
                 Ok(())
