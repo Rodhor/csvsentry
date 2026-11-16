@@ -1,7 +1,7 @@
 use csvsentry::domain::validation_configuration::{ColumnConfig, ValidationConfig};
 use csvsentry::validation::column_types::ColumnType;
 
-pub fn create_valid_csv() -> &'static str {
+pub fn people_csv() -> &'static str {
     "\
 id,name,age,mail,phone
 1,Alice,30,alice@example.com,+49 123 456789
@@ -10,7 +10,7 @@ id,name,age,mail,phone
 "
 }
 
-pub fn create_invalid_csv() -> &'static str {
+pub fn people_csv_bad_cells() -> &'static str {
     "\
 id,name,age,mail,phone
 1,Alice,thirty,alice@example.com,555-0100
@@ -19,17 +19,9 @@ id,name,age,mail,phone
 "
 }
 
-pub fn create_csv_with_caret_comma() -> &'static str {
-    "\
-id^name^age^mail^phone
-1^Diana^28^diana@example.com^555-0300
-2^Eve^22^eve@example.com^555-0311
-"
-}
-
-pub fn valid_configuration() -> (&'static str, ValidationConfig) {
+pub fn matching_types() -> (&'static str, ValidationConfig) {
     (
-        create_valid_csv(),
+        people_csv(),
         ValidationConfig {
             columns: vec![
                 ColumnConfig {
@@ -66,9 +58,9 @@ pub fn valid_configuration() -> (&'static str, ValidationConfig) {
         },
     )
 }
-pub fn invalid_configuration() -> (&'static str, ValidationConfig) {
+pub fn swapped_mail_and_phone() -> (&'static str, ValidationConfig) {
     (
-        create_valid_csv(),
+        people_csv(),
         ValidationConfig {
             columns: vec![
                 ColumnConfig {
@@ -105,9 +97,9 @@ pub fn invalid_configuration() -> (&'static str, ValidationConfig) {
         },
     )
 }
-pub fn valid_configuration_invalid_csv() -> (&'static str, ValidationConfig) {
+pub fn matching_types_bad_cells() -> (&'static str, ValidationConfig) {
     (
-        create_invalid_csv(),
+        people_csv_bad_cells(),
         ValidationConfig {
             columns: vec![
                 ColumnConfig {

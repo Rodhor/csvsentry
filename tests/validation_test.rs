@@ -3,8 +3,8 @@ use csvsentry::validation::validation_result::validate_row;
 
 mod common;
 #[test]
-pub fn test_column_validation_valid() {
-    let (csv, config) = common::valid_configuration();
+pub fn matching_types_accepts_rows() {
+    let (csv, config) = common::matching_types();
     let mut rows = csv.lines();
     let mut result = Vec::new();
     // Discard headers
@@ -29,8 +29,8 @@ pub fn test_column_validation_valid() {
     assert_eq!(result.len(), 0, "Expected 0 invalid values")
 }
 #[test]
-pub fn test_column_validation_invalid() {
-    let (csv, config) = common::invalid_configuration();
+pub fn swapped_mail_and_phone_rejects_those_cells() {
+    let (csv, config) = common::swapped_mail_and_phone();
     let mut rows = csv.lines();
     let mut result = Vec::new();
     // Discard headers
@@ -70,8 +70,8 @@ pub fn test_column_validation_invalid() {
 }
 
 #[test]
-pub fn test_valid_configuration_invalid_csv() {
-    let (csv, config) = common::valid_configuration_invalid_csv();
+pub fn matching_types_rejects_bad_cells() {
+    let (csv, config) = common::matching_types_bad_cells();
     let mut rows = csv.lines();
     let mut result = Vec::new();
     // Discard headers
