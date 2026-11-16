@@ -27,39 +27,120 @@ id^name^age^mail^phone
 "
 }
 
-pub fn create_validation_config() -> ValidationConfig {
-    ValidationConfig {
-        columns: vec![
-            ColumnConfig {
-                header: "id".to_string(),
-                index: 0,
-                expected_type: ColumnType::Integer,
-                required: true,
-            },
-            ColumnConfig {
-                header: "name".to_string(),
-                index: 1,
-                expected_type: ColumnType::Text(None),
-                required: true,
-            },
-            ColumnConfig {
-                header: "age".to_string(),
-                index: 2,
-                expected_type: ColumnType::Integer,
-                required: true,
-            },
-            ColumnConfig {
-                header: "mail".to_string(),
-                index: 3,
-                expected_type: ColumnType::Email,
-                required: true,
-            },
-            ColumnConfig {
-                header: "phone".to_string(),
-                index: 4,
-                expected_type: ColumnType::PhoneNumber,
-                required: true,
-            },
-        ],
-    }
+pub fn valid_configuration() -> (&'static str, ValidationConfig) {
+    (
+        create_valid_csv(),
+        ValidationConfig {
+            columns: vec![
+                ColumnConfig {
+                    header: "id".to_string(),
+                    index: 0,
+                    expected_type: ColumnType::Integer,
+                    required: true,
+                },
+                ColumnConfig {
+                    header: "name".to_string(),
+                    index: 1,
+                    expected_type: ColumnType::Text(None),
+                    required: true,
+                },
+                ColumnConfig {
+                    header: "age".to_string(),
+                    index: 2,
+                    expected_type: ColumnType::Integer,
+                    required: true,
+                },
+                ColumnConfig {
+                    header: "mail".to_string(),
+                    index: 3,
+                    expected_type: ColumnType::Email,
+                    required: true,
+                },
+                ColumnConfig {
+                    header: "phone".to_string(),
+                    index: 4,
+                    expected_type: ColumnType::PhoneNumber,
+                    required: true,
+                },
+            ],
+        },
+    )
+}
+pub fn invalid_configuration() -> (&'static str, ValidationConfig) {
+    (
+        create_valid_csv(),
+        ValidationConfig {
+            columns: vec![
+                ColumnConfig {
+                    header: "id".to_string(),
+                    index: 0,
+                    expected_type: ColumnType::Text(None),
+                    required: true,
+                },
+                ColumnConfig {
+                    header: "name".to_string(),
+                    index: 1,
+                    expected_type: ColumnType::Text(None),
+                    required: true,
+                },
+                ColumnConfig {
+                    header: "age".to_string(),
+                    index: 2,
+                    expected_type: ColumnType::Float,
+                    required: true,
+                },
+                ColumnConfig {
+                    header: "mail".to_string(),
+                    index: 3,
+                    expected_type: ColumnType::PhoneNumber,
+                    required: true,
+                },
+                ColumnConfig {
+                    header: "phone".to_string(),
+                    index: 4,
+                    expected_type: ColumnType::Email,
+                    required: true,
+                },
+            ],
+        },
+    )
+}
+pub fn valid_configuration_invalid_csv() -> (&'static str, ValidationConfig) {
+    (
+        create_invalid_csv(),
+        ValidationConfig {
+            columns: vec![
+                ColumnConfig {
+                    header: "id".to_string(),
+                    index: 0,
+                    expected_type: ColumnType::Integer,
+                    required: true,
+                },
+                ColumnConfig {
+                    header: "name".to_string(),
+                    index: 1,
+                    expected_type: ColumnType::Text(None),
+                    required: true,
+                },
+                ColumnConfig {
+                    header: "age".to_string(),
+                    index: 2,
+                    expected_type: ColumnType::Integer,
+                    required: true,
+                },
+                ColumnConfig {
+                    header: "mail".to_string(),
+                    index: 3,
+                    expected_type: ColumnType::Email,
+                    required: true,
+                },
+                ColumnConfig {
+                    header: "phone".to_string(),
+                    index: 4,
+                    expected_type: ColumnType::PhoneNumber,
+                    required: true,
+                },
+            ],
+        },
+    )
 }
