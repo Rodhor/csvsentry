@@ -1,4 +1,4 @@
-use csvsentry::domain::validation_configuration::{ColumnConfig, ValidationConfig};
+use csvsentry::domain::validation_configuration::{ColumnConfig, Row, ValidationConfig};
 use csvsentry::validation::column_types::ColumnType;
 
 pub fn people_csv() -> &'static str {
@@ -19,6 +19,17 @@ id,name,age,mail,phone
 "
 }
 
+fn rows_from(csv: &str) -> Vec<Row> {
+    csv.lines()
+        // Skip header
+        .skip(1)
+        .enumerate()
+        .map(|(number, line)| Row {
+            number,
+            cells: line.split(',').map(str::to_owned).collect(),
+        })
+        .collect()
+}
 pub fn matching_types() -> (&'static str, ValidationConfig) {
     (
         people_csv(),
@@ -130,6 +141,123 @@ pub fn matching_types_bad_cells() -> (&'static str, ValidationConfig) {
                     header: "phone".to_string(),
                     index: 4,
                     expected_type: ColumnType::PhoneNumber,
+                    required: true,
+                },
+            ],
+        },
+    )
+}
+pub fn matching_types_rows() -> (Vec<Row>, ValidationConfig) {
+    (
+        rows_from(people_csv()),
+        ValidationConfig {
+            columns: vec![
+                ColumnConfig {
+                    header: "id".to_string(),
+                    index: 0,
+                    expected_type: ColumnType::Integer,
+                    required: true,
+                },
+                ColumnConfig {
+                    header: "name".to_string(),
+                    index: 1,
+                    expected_type: ColumnType::Text(None),
+                    required: true,
+                },
+                ColumnConfig {
+                    header: "age".to_string(),
+                    index: 2,
+                    expected_type: ColumnType::Integer,
+                    required: true,
+                },
+                ColumnConfig {
+                    header: "mail".to_string(),
+                    index: 3,
+                    expected_type: ColumnType::Email,
+                    required: true,
+                },
+                ColumnConfig {
+                    header: "phone".to_string(),
+                    index: 4,
+                    expected_type: ColumnType::PhoneNumber,
+                    required: true,
+                },
+            ],
+        },
+    )
+}
+pub fn matching_types_bad_cells_row() -> (Vec<Row>, ValidationConfig) {
+    (
+        rows_from(people_csv_bad_cells()),
+        ValidationConfig {
+            columns: vec![
+                ColumnConfig {
+                    header: "id".to_string(),
+                    index: 0,
+                    expected_type: ColumnType::Integer,
+                    required: true,
+                },
+                ColumnConfig {
+                    header: "name".to_string(),
+                    index: 1,
+                    expected_type: ColumnType::Text(None),
+                    required: true,
+                },
+                ColumnConfig {
+                    header: "age".to_string(),
+                    index: 2,
+                    expected_type: ColumnType::Integer,
+                    required: true,
+                },
+                ColumnConfig {
+                    header: "mail".to_string(),
+                    index: 3,
+                    expected_type: ColumnType::Email,
+                    required: true,
+                },
+                ColumnConfig {
+                    header: "phone".to_string(),
+                    index: 4,
+                    expected_type: ColumnType::PhoneNumber,
+                    required: true,
+                },
+            ],
+        },
+    )
+}
+pub fn swapped_mail_and_phone_row() -> (Vec<Row>, ValidationConfig) {
+    (
+        rows_from(people_csv()),
+        ValidationConfig {
+            columns: vec![
+                ColumnConfig {
+                    header: "id".to_string(),
+                    index: 0,
+                    expected_type: ColumnType::Text(None),
+                    required: true,
+                },
+                ColumnConfig {
+                    header: "name".to_string(),
+                    index: 1,
+                    expected_type: ColumnType::Text(None),
+                    required: true,
+                },
+                ColumnConfig {
+                    header: "age".to_string(),
+                    index: 2,
+                    expected_type: ColumnType::Float,
+                    required: true,
+                },
+                ColumnConfig {
+                    header: "mail".to_string(),
+                    index: 3,
+                    expected_type: ColumnType::PhoneNumber,
+                    required: true,
+                },
+                ColumnConfig {
+                    header: "phone".to_string(),
+                    index: 4,
+                    expected_type: ColumnType::Email,
                     required: true,
                 },
             ],
