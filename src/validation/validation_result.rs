@@ -24,6 +24,47 @@ pub struct ValidationResult {
     pub status: ValidationStatus,
 }
 
+pub fn validate_rows<'a>(
+    rows: impl IntoIterator<Item = &'a Row>,
+    config: &ValidationConfig,
+) -> Vec<ValidationResult> {
+    let mut results: Vec<ValidationResult> = config
+        .columns
+        .iter()
+        .map(|col| ValidationResult {
+            column: col.index as u64,
+            column_header: col.header.clone(),
+            unique_values: HashSet::new(),
+            total_values: 0,
+            total_empty: 0,
+            invalid_values: Vec::new(),
+            status: ValidationStatus::Valid,
+        })
+        .collect();
+
+    for row in rows {
+        for (i, col) in config.columns.iter().enumerate() {
+            let value = row.cells.get(col.index).map(String::as_str).unwrap_or("");
+            let slot = &mut results[i];
+            slot.total_values += 1;
+            if value.trim().is_empty() {
+                slot.total_empty += 1;
+            } else {
+                slot.unique_values.insert(value.to_string());
+            }
+        }
+        for error in validate_row(row, config) {
+            let slot = results
+                .iter_mut()
+                .find(|r| r.column == error.column as u64)
+                .expect("error column is one of config.columns");
+            slot.status = ValidationStatus::Invalid;
+            slot.invalid_values.push(error)
+        }
+    }
+    results
+}
+
 pub fn validate_row(row: &Row, config: &ValidationConfig) -> Vec<InvalidValue> {
     let mut invalids = Vec::new();
     for col in &config.columns {
