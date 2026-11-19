@@ -1,6 +1,7 @@
 use crate::domain::validation_configuration::{Row, ValidationConfig};
 use std::collections::HashSet;
 
+#[derive(Debug, PartialEq, Eq)]
 pub enum ValidationStatus {
     Valid,
     Invalid,
