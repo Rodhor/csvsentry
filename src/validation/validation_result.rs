@@ -1,13 +1,14 @@
 use crate::domain::validation_configuration::{Row, ValidationConfig};
+use serde::Serialize;
 use std::collections::HashSet;
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Serialize)]
 pub enum ValidationStatus {
     Valid,
     Invalid,
 }
 
-#[derive(Debug)]
+#[derive(Debug, Serialize)]
 pub struct InvalidValue {
     pub row: usize,
     pub column: usize,
@@ -15,6 +16,8 @@ pub struct InvalidValue {
     pub value: String,
     pub error: String,
 }
+
+#[derive(Serialize)]
 pub struct ValidationResult {
     pub column: u64,
     pub column_header: String,
