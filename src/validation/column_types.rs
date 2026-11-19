@@ -57,10 +57,6 @@ impl ColumnType {
                 Ok(())
             }
             ColumnType::Email => {
-                if val.is_empty() {
-                    return Ok(());
-                }
-
                 // Custom logic to define invalid states of the email that are not caught by the validator
                 if val.contains("..")
                     || val.starts_with('.')
@@ -78,10 +74,6 @@ impl ColumnType {
             }
             ColumnType::PhoneNumber => {
                 let trimmed = val.trim();
-                if trimmed.is_empty() {
-                    return Ok(());
-                }
-
                 let valid_chars = trimmed.chars().enumerate().all(|(i, c)| {
                     c.is_ascii_digit() || matches!(c, ' ' | '-' | '(' | ')') || (i == 0 && c == '+')
                 });
@@ -92,9 +84,6 @@ impl ColumnType {
                 Ok(())
             }
             ColumnType::Website => {
-                if val.is_empty() {
-                    return Ok(());
-                }
                 let candidate = if val.starts_with("www.") {
                     format!("https://{val}")
                 } else {
