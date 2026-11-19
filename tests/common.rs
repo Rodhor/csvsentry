@@ -18,6 +18,14 @@ id,name,age,mail,phone
 ,Charlie,40,charlie@example.com,555-0200
 "
 }
+pub fn people_csv_empty_or_whitespace_cells() -> &'static str {
+    "\
+id,name,age,mail,phone
+1,Alice,        ,alice@example.com,
+2,Bob,25,valid@email.com,
+3,Charlie,   ,charlie@example.com,555-0200
+"
+}
 
 fn rows_from(csv: &str) -> Vec<Row> {
     csv.lines()
@@ -259,6 +267,85 @@ pub fn swapped_mail_and_phone_row() -> (Vec<Row>, ValidationConfig) {
                     index: 4,
                     expected_type: ColumnType::Email,
                     required: true,
+                },
+            ],
+        },
+    )
+}
+
+pub fn whitespace_and_missing_cells() -> (Vec<Row>, ValidationConfig) {
+    (
+        rows_from(people_csv_empty_or_whitespace_cells()),
+        ValidationConfig {
+            columns: vec![
+                ColumnConfig {
+                    header: "id".to_string(),
+                    index: 0,
+                    expected_type: ColumnType::Text(None),
+                    required: true,
+                },
+                ColumnConfig {
+                    header: "name".to_string(),
+                    index: 1,
+                    expected_type: ColumnType::Text(None),
+                    required: true,
+                },
+                ColumnConfig {
+                    header: "age".to_string(),
+                    index: 2,
+                    expected_type: ColumnType::Float,
+                    required: false,
+                },
+                ColumnConfig {
+                    header: "mail".to_string(),
+                    index: 3,
+                    expected_type: ColumnType::Email,
+                    required: true,
+                },
+                ColumnConfig {
+                    header: "phone".to_string(),
+                    index: 4,
+                    expected_type: ColumnType::PhoneNumber,
+                    required: true,
+                },
+            ],
+        },
+    )
+}
+pub fn whitespace_and_missing_cells_part_2() -> (Vec<Row>, ValidationConfig) {
+    (
+        rows_from(people_csv_empty_or_whitespace_cells()),
+        ValidationConfig {
+            columns: vec![
+                ColumnConfig {
+                    header: "id".to_string(),
+                    index: 0,
+                    expected_type: ColumnType::Text(None),
+                    required: true,
+                },
+                ColumnConfig {
+                    header: "name".to_string(),
+                    index: 1,
+                    expected_type: ColumnType::Text(None),
+                    required: true,
+                },
+                ColumnConfig {
+                    header: "age".to_string(),
+                    index: 2,
+                    expected_type: ColumnType::Float,
+                    required: true,
+                },
+                ColumnConfig {
+                    header: "mail".to_string(),
+                    index: 3,
+                    expected_type: ColumnType::Email,
+                    required: true,
+                },
+                ColumnConfig {
+                    header: "phone".to_string(),
+                    index: 4,
+                    expected_type: ColumnType::PhoneNumber,
+                    required: false,
                 },
             ],
         },

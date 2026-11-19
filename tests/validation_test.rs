@@ -211,18 +211,76 @@ pub fn matching_types_return_valid_rows() {
     )
 }
 #[test]
-pub fn miss_matching_types_return_invalid_rows() {
-    let (csv, config) = common::matching_types_bad_cells_row();
+pub fn whitespace_and_empty_cells_required_and_not_required() {
+    let (csv, config) = common::whitespace_and_missing_cells();
+    let results = validate_rows(&csv, &config);
+
+    let got: Vec<_> = results
+        .iter()
+        .map(|r| {
+            (
+                r.column_header.as_str(),
+                r.total_values,
+                r.total_empty,
+                r.unique_values.len(),
+                r.invalid_values.len(),
+            )
+        })
+        .collect();
+    assert_eq!(
+        got,
+        vec![
+            // header|total|empty|unique|invalid
+            ("id", 3, 0, 3, 0),
+            ("name", 3, 0, 3, 0),
+            ("age", 3, 2, 1, 0),
+            ("mail", 3, 0, 3, 0),
+            ("phone", 3, 2, 1, 2),
+        ]
+    );
+}
+#[test]
+pub fn whitespace_and_empty_cells_required_and_not_required_part_2() {
+    let (csv, config) = common::whitespace_and_missing_cells_part_2();
+    let results = validate_rows(&csv, &config);
+
+    let got: Vec<_> = results
+        .iter()
+        .map(|r| {
+            (
+                r.column_header.as_str(),
+                r.total_values,
+                r.total_empty,
+                r.unique_values.len(),
+                r.invalid_values.len(),
+            )
+        })
+        .collect();
+    assert_eq!(
+        got,
+        vec![
+            // header|total|empty|unique|invalid
+            ("id", 3, 0, 3, 0),
+            ("name", 3, 0, 3, 0),
+            ("age", 3, 2, 1, 2),
+            ("mail", 3, 0, 3, 0),
+            ("phone", 3, 2, 1, 0),
+        ]
+    );
+}
+#[test]
+pub fn whitespace_and_empty_cells_required_and_not_required_status_validation() {
+    let (csv, config) = common::whitespace_and_missing_cells_part_2();
     let results = validate_rows(&csv, &config);
 
     let got: Vec<_> = results.iter().map(|r| &r.status).collect();
     assert_eq!(
         got,
         vec![
-            &ValidationStatus::Invalid,
+            &ValidationStatus::Valid,
             &ValidationStatus::Valid,
             &ValidationStatus::Invalid,
-            &ValidationStatus::Invalid,
+            &ValidationStatus::Valid,
             &ValidationStatus::Valid,
         ]
     )
