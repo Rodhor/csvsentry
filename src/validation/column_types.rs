@@ -14,7 +14,7 @@ pub enum ColumnType {
 
 impl ColumnType {
     pub fn validate(&self, val: &str) -> Result<(), String> {
-        if val.is_empty() {
+        if val.trim().is_empty() {
             return Ok(());
         }
         match self {
