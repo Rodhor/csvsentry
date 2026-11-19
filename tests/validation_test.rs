@@ -1,5 +1,5 @@
 use csvsentry::domain::validation_configuration::Row;
-use csvsentry::validation::validation_result::{validate_row, validate_rows};
+use csvsentry::validation::validation_result::{ValidationStatus, validate_row, validate_rows};
 
 mod common;
 #[test]
@@ -190,6 +190,40 @@ pub fn miss_matching_column_types_validation_result() {
             ("age", 3, 0, 3, 0),
             ("mail", 3, 0, 3, 3),
             ("phone", 3, 0, 2, 3),
+        ]
+    )
+}
+#[test]
+pub fn matching_types_return_valid_rows() {
+    let (csv, config) = common::matching_types_rows();
+    let results = validate_rows(&csv, &config);
+
+    let got: Vec<_> = results.iter().map(|r| &r.status).collect();
+    assert_eq!(
+        got,
+        vec![
+            &ValidationStatus::Valid,
+            &ValidationStatus::Valid,
+            &ValidationStatus::Valid,
+            &ValidationStatus::Valid,
+            &ValidationStatus::Valid,
+        ]
+    )
+}
+#[test]
+pub fn miss_matching_types_return_invalid_rows() {
+    let (csv, config) = common::matching_types_bad_cells_row();
+    let results = validate_rows(&csv, &config);
+
+    let got: Vec<_> = results.iter().map(|r| &r.status).collect();
+    assert_eq!(
+        got,
+        vec![
+            &ValidationStatus::Invalid,
+            &ValidationStatus::Valid,
+            &ValidationStatus::Invalid,
+            &ValidationStatus::Invalid,
+            &ValidationStatus::Valid,
         ]
     )
 }
