@@ -1,5 +1,7 @@
 use crate::{
-    csv_handling::csv_settings::CsvSettings, domain::validation_configuration::ValidationConfig,
+    csv_handling::{self, csv_settings::CsvSettings},
+    domain::validation_configuration::{ColumnConfig, ValidationConfig},
+    validation::column_types::ColumnType,
 };
 use anyhow::{Context, Result};
 use serde::{Deserialize, Serialize};
@@ -39,5 +41,40 @@ impl Store for Settings {
             )
         })?;
         Ok(settings)
+    }
+}
+
+impl Settings {
+    fn create_settings_from_csv_file(
+        csv_path: impl AsRef<Path>,
+        output_path: impl AsRef<Path>,
+        delimiter: u8,
+    ) -> Result<()> {
+        let csv_path = csv_path.as_ref();
+        let csv_header = csv_handling::read::read_csv_headers(csv_path, delimiter)?;
+
+        let column_settings = csv_header
+            .iter()
+            .enumerate()
+            .map(|(index, header)| ColumnConfig {
+                header: header.to_owned(),
+                index,
+                expected_type: ColumnType::Text(None),
+                required: true,
+            })
+            .collect();
+
+        let settings = Settings {
+            csv_settings: CsvSettings {
+                file_path: csv_path.to_path_buf(),
+                delimiter,
+                has_header: true,
+            },
+            validation_settings: ValidationConfig {
+                columns: column_settings,
+            },
+        };
+
+        settings.save(output_path)
     }
 }
