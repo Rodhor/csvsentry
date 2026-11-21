@@ -20,7 +20,7 @@ impl ColumnType {
             return Ok(());
         }
         match self {
-            ColumnType::Text(None) => return Ok(()),
+            ColumnType::Text(None) => Ok(()),
             ColumnType::Text(Some(invalid_strings)) => {
                 // Iterate through the invalid substrings, checking if present in the value
                 let contains_invalid: Vec<String> = invalid_strings
@@ -48,7 +48,7 @@ impl ColumnType {
                 _ => Err(format!("expected float, found: {val}")),
             },
             ColumnType::Salutation => {
-                let valid_salutations = vec![
+                let valid_salutations = [
                     String::from("herr"),
                     String::from("frau"),
                     String::from("firma"),

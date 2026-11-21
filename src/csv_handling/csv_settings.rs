@@ -1,5 +1,6 @@
 use std::path::PathBuf;
 
+#[derive(Default)]
 pub struct CsvSettings {
     pub file_path: PathBuf,
     pub delimiter: u8,

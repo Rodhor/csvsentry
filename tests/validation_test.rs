@@ -11,11 +11,7 @@ pub fn matching_types_accepts_rows() {
     rows.next();
 
     for (number, row_values) in rows.enumerate() {
-        let row_values: Vec<String> = row_values
-            .split(',')
-            .into_iter()
-            .map(str::to_owned)
-            .collect();
+        let row_values: Vec<String> = row_values.split(',').map(str::to_owned).collect();
         let row = Row {
             number,
             cells: row_values,
@@ -37,11 +33,7 @@ pub fn swapped_mail_and_phone_rejects_those_cells() {
     rows.next();
 
     for (number, row_values) in rows.enumerate() {
-        let row_values: Vec<String> = row_values
-            .split(',')
-            .into_iter()
-            .map(str::to_owned)
-            .collect();
+        let row_values: Vec<String> = row_values.split(',').map(str::to_owned).collect();
         let row = Row {
             number,
             cells: row_values,
@@ -78,11 +70,7 @@ pub fn matching_types_rejects_bad_cells() {
     rows.next();
 
     for (number, row_values) in rows.enumerate() {
-        let row_values: Vec<String> = row_values
-            .split(',')
-            .into_iter()
-            .map(str::to_owned)
-            .collect();
+        let row_values: Vec<String> = row_values.split(',').map(str::to_owned).collect();
         let row = Row {
             number,
             cells: row_values,
