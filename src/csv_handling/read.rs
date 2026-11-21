@@ -1,8 +1,9 @@
 use crate::csv_handling::csv_settings::CsvSettings;
 use crate::domain::validation_configuration::{Row, ValidationConfig};
 use crate::validation::validation_result::{ValidationResult, validate_rows};
-use anyhow::Result;
+use anyhow::{Ok, Result};
 use std::fs::File;
+use std::path::Path;
 
 pub fn validate_csv(
     settings: CsvSettings,
@@ -29,4 +30,15 @@ pub fn read_csv(settings: CsvSettings) -> Result<Vec<Row>> {
             })
         })
         .collect()
+}
+
+pub fn read_csv_headers(path: &Path, delimiter: u8) -> Result<Vec<String>> {
+    let file = File::open(path)?;
+    let mut reader = csv::ReaderBuilder::new()
+        .has_headers(true)
+        .delimiter(delimiter)
+        .from_reader(file);
+
+    let headers = reader.headers()?;
+    Ok(headers.iter().map(str::to_owned).collect())
 }
