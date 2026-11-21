@@ -6,7 +6,7 @@ pub struct Row {
     pub cells: Vec<String>,
 }
 
-#[derive(Deserialize, Serialize)]
+#[derive(Debug, Deserialize, Serialize)]
 pub struct ColumnConfig {
     pub header: String,
     pub index: usize,
@@ -14,7 +14,7 @@ pub struct ColumnConfig {
     pub required: bool,
 }
 
-#[derive(Deserialize, Serialize)]
+#[derive(Debug, Deserialize, Serialize)]
 pub struct ValidationConfig {
     pub columns: Vec<ColumnConfig>,
 }

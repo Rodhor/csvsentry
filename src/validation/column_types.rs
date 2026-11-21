@@ -3,7 +3,7 @@ use serde::{Deserialize, Serialize};
 use url::Url;
 use validator::ValidateEmail;
 
-#[derive(Deserialize, Serialize)]
+#[derive(Debug, Deserialize, Serialize)]
 pub enum ColumnType {
     Text(Option<Vec<String>>),
     Integer,
