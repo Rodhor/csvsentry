@@ -1,10 +1,9 @@
 use anyhow::Result;
 use clap::{Parser, Subcommand};
 use csvsentry_core::{
-    domain::settings::{self, Settings},
-    services::validation_service::validate_from_settings_to_json_output,
+    domain::settings::Settings, services::validation_service::validate_from_settings_to_json_output,
 };
-use std::{env, path::PathBuf};
+use std::path::PathBuf;
 
 use crate::helpers::file_paths::resolve_json_output_path;
 mod helpers;
