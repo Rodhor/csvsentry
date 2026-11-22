@@ -5,14 +5,17 @@ use std::{
 
 use anyhow::Result;
 
-pub fn resolve_json_output_path(filepath: Option<PathBuf>) -> Result<PathBuf> {
+pub fn resolve_json_output_path(
+    filepath: Option<PathBuf>,
+    default_name: String,
+) -> Result<PathBuf> {
     let mut path = match filepath {
         Some(path) => path,
-        None => env::current_dir()?.join("result.json"),
+        None => env::current_dir()?.join(format!("{default_name}.json")),
     };
 
     if path.is_dir() || has_trailing_separater(&path) {
-        path.push("results.json");
+        path.push(format!("{default_name}.json"));
         return Ok(path);
     }
 
