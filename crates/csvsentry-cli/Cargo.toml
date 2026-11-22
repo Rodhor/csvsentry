@@ -17,3 +17,12 @@ path = "src/main.rs"
 anyhow = "1.0.104"
 clap = { version = "4.6.9", features = ["derive"] }
 csvsentry-core = { path = "../csvsentry-core" }
+
+[package.metadata.dist]
+dist = true
+
+[package.metadata.wix]
+upgrade-guid = "8DF78A7B-4520-46F1-979C-98613A20BC5A"
+path-guid = "6AADE624-7FEC-41EE-9FD3-CA500822F6E9"
+license = false
+eula = false
