@@ -1,4 +1,5 @@
 use anyhow::Result;
+use chrono::{DateTime, NaiveDate, NaiveDateTime};
 use serde::{Deserialize, Serialize};
 use url::Url;
 use validator::ValidateEmail;
@@ -13,6 +14,8 @@ pub enum ColumnType {
     Website,
     Salutation,
     Boolean,
+    Date,
+    DateTime,
 }
 
 impl ColumnType {
@@ -122,6 +125,22 @@ impl ColumnType {
                     Ok(())
                 } else {
                     Err(format!("invalid boolean value: {:?}", val))
+                }
+            }
+            ColumnType::Date => val
+                .parse::<NaiveDate>()
+                .map(|_| ())
+                .map_err(|_| format!("expected date, found: {val}")),
+
+            ColumnType::DateTime => {
+                let naive_t = val.parse::<NaiveDateTime>().is_ok();
+                let naive_space = NaiveDateTime::parse_from_str(val, "%Y-%m-%d %H:%M:%S").is_ok();
+                let rfc3339 = DateTime::parse_from_rfc3339(val).is_ok();
+
+                if naive_t || naive_space || rfc3339 {
+                    Ok(())
+                } else {
+                    Err(format!("expected datetime, found: {val}"))
                 }
             }
         }
