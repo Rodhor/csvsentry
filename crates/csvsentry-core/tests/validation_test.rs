@@ -1,4 +1,5 @@
 use csvsentry_core::domain::validation_configuration::Row;
+use csvsentry_core::validation::column_types::ColumnType;
 use csvsentry_core::validation::validation_result::{
     ValidationStatus, validate_row, validate_rows,
 };
@@ -274,4 +275,20 @@ pub fn whitespace_and_empty_cells_required_and_not_required_status_validation() 
             &ValidationStatus::Valid,
         ]
     )
+}
+
+#[test]
+fn test_boolean() {
+    let valid = vec![
+        "", "true", "false", "TRUE", "FALSE", "True", "False", "wahr", "falsch", "ja", "nein", "j",
+        "n", "1", "0", "y", "yes", "no",
+    ];
+    let invalid = vec!["maybe", "2", "yes please", "random", "t", "f"];
+
+    for v in valid {
+        assert!(ColumnType::Boolean.validate(v).is_ok(), "{v}");
+    }
+    for v in invalid {
+        assert!(ColumnType::Boolean.validate(v).is_err(), "{v}");
+    }
 }
