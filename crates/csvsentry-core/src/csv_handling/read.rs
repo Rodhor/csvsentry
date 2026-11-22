@@ -12,6 +12,7 @@ pub fn validate_csv(
     let rows = read_csv(settings)?;
     Ok(validate_rows(rows.iter(), &config))
 }
+
 pub fn read_csv(settings: CsvSettings) -> Result<Vec<Row>> {
     let file = File::open(settings.file_path)?;
     let mut reader = csv::ReaderBuilder::new()
