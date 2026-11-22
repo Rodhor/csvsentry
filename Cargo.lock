@@ -362,6 +362,7 @@ dependencies = [
  "axoupdater",
  "clap",
  "csvsentry-core",
+ "serde_json",
 ]
 
 [[package]]

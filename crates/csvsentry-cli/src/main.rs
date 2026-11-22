@@ -2,11 +2,14 @@ use anyhow::{Context, Result};
 use axoupdater::AxoUpdater;
 use clap::{Parser, Subcommand};
 use csvsentry_core::{
-    domain::settings::Settings, services::validation_service::validate_from_settings_to_json_output,
+    domain::settings::Settings, services::validation_service::validate_from_settings,
 };
 use std::path::PathBuf;
 
-use crate::helpers::file_paths::resolve_json_output_path;
+use crate::helpers::{
+    file_paths::resolve_json_output_path,
+    output::{OutputFormat, write_results},
+};
 mod helpers;
 
 #[derive(Parser)]
@@ -20,6 +23,7 @@ struct Cli {
 enum Commands {
     Update,
     Generate {
+        #[arg(short, long)]
         csv_filepath: PathBuf,
 
         #[arg(short, long)]
@@ -29,8 +33,14 @@ enum Commands {
         delimiter: char,
     },
     Validate {
+        #[arg(short, long)]
         settings_filepath: PathBuf,
+
+        #[arg(short, long)]
         output_filepath: Option<PathBuf>,
+
+        #[arg(short, long, value_enum, default_value = "jsonl")]
+        format: OutputFormat,
     },
 }
 
@@ -69,19 +79,17 @@ fn main() -> Result<()> {
         Commands::Validate {
             settings_filepath,
             output_filepath,
+            format,
         } => {
             println!(
                 "Starting validation based on settings from {:?}",
                 settings_filepath
             );
 
-            let output_filepath = resolve_json_output_path(output_filepath, "results".to_string())?;
-            let result_path =
-                validate_from_settings_to_json_output(settings_filepath, output_filepath)?;
-            println!(
-                "Validation finished, result was written to {:?}",
-                result_path
-            );
+            let path = resolve_json_output_path(output_filepath, "results".to_string())?;
+            let results = validate_from_settings(settings_filepath)?;
+            write_results(results, &path, format)?;
+            println!("Validation finished, result was written to {:?}", path);
         }
     }
     Ok(())
