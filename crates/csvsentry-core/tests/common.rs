@@ -1,3 +1,5 @@
+#![allow(dead_code)]
+
 use csvsentry_core::domain::validation_configuration::{ColumnConfig, Row, ValidationConfig};
 use csvsentry_core::validation::column_types::ColumnType;
 
