@@ -1,5 +1,5 @@
-use csvsentry::domain::validation_configuration::{ColumnConfig, Row, ValidationConfig};
-use csvsentry::validation::column_types::ColumnType;
+use csvsentry_core::domain::validation_configuration::{ColumnConfig, Row, ValidationConfig};
+use csvsentry_core::validation::column_types::ColumnType;
 
 pub fn people_csv() -> &'static str {
     "\

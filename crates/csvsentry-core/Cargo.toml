@@ -1,0 +1,19 @@
+[package]
+name = "csvsentry-core"
+version = "0.1.0"
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+repository.workspace = true
+readme.workspace = true
+publish.workspace = true
+description = "CSV parsing and validation core for csvsentry"
+
+
+[dependencies]
+anyhow = "1.0.104"
+csv = "1.4.0"
+serde = { version = "1.0.229", features = ["serde_derive"] }
+serde_json = "1.0.154"
+validator = "0.21.0"
+url = "2.5.9"

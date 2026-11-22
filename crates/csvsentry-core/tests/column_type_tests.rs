@@ -1,4 +1,4 @@
-use csvsentry::validation::column_types::ColumnType;
+use csvsentry_core::validation::column_types::ColumnType;
 
 mod common;
 #[test]

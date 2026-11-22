@@ -1,12 +1,16 @@
-[package]
-name = "csvsentry"
-version = "0.1.0"
-edition = "2024"
+[workspace]
+members = ["crates/*"]
+resolver = "3"
 
-[dependencies]
-anyhow = "1.0.104"
-csv = "1.4.0"
-serde = { version = "1.0.229", features = ["serde_derive"] }
-serde_json = "1.0.154"
-validator = "0.21.0"
-url = "2.5.9"
+
+[workspace.package]
+edition = "2024"
+authors = ["Rodhor"]
+license = "Apache-2.0"
+repository = "https://github.com/Rodhor/csvsentry"
+readme = "README.md"
+publish = false
+
+[workspace.metadata.release]
+publish = false
+tag-name = "{{crate_name}}-v{{version}}"

@@ -9,11 +9,11 @@ use std::{fs, path::Path};
 
 #[derive(Debug, Deserialize, Serialize)]
 pub struct Settings {
-    csv_settings: CsvSettings,
-    validation_settings: ValidationConfig,
+    pub csv_settings: CsvSettings,
+    pub validation_settings: ValidationConfig,
 }
 
-trait Store {
+pub trait Store {
     fn save(&self, path: impl AsRef<Path>) -> Result<()>;
 
     fn load(path: impl AsRef<Path>) -> Result<Settings>;
@@ -45,7 +45,7 @@ impl Store for Settings {
 }
 
 impl Settings {
-    fn create_settings_from_csv_file(
+    pub fn create_settings_from_csv_file(
         csv_path: impl AsRef<Path>,
         output_path: impl AsRef<Path>,
         delimiter: u8,

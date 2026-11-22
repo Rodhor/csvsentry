@@ -1,0 +1,19 @@
+[package]
+name = "csvsentry-cli"
+version = "0.1.0"
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+repository.workspace = true
+readme.workspace = true
+publish.workspace = true
+description = "Command-line CSV validator"
+
+[[bin]]
+name = "csvsentry"
+path = "src/main.rs"
+
+[dependencies]
+anyhow = "1.0.104"
+clap = { version = "4.6.9", features = ["derive"] }
+csvsentry-core = { path = "../csvsentry-core" }

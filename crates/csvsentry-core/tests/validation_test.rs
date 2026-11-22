@@ -1,5 +1,7 @@
-use csvsentry::domain::validation_configuration::Row;
-use csvsentry::validation::validation_result::{ValidationStatus, validate_row, validate_rows};
+use csvsentry_core::domain::validation_configuration::Row;
+use csvsentry_core::validation::validation_result::{
+    ValidationStatus, validate_row, validate_rows,
+};
 
 mod common;
 #[test]
