@@ -17,6 +17,8 @@ path = "src/main.rs"
 anyhow = "1.0.104"
 clap = { version = "4.6.9", features = ["derive"] }
 csvsentry-core = { path = "../csvsentry-core" }
+axoupdater = { version = "0.10.3", features = ["blocking"] }
+
 
 [package.metadata.dist]
 dist = true

@@ -1,4 +1,5 @@
-use anyhow::Result;
+use anyhow::{Context, Result};
+use axoupdater::AxoUpdater;
 use clap::{Parser, Subcommand};
 use csvsentry_core::{
     domain::settings::Settings, services::validation_service::validate_from_settings_to_json_output,
@@ -17,6 +18,7 @@ struct Cli {
 
 #[derive(Subcommand)]
 enum Commands {
+    Update,
     Generate {
         csv_filepath: PathBuf,
 
@@ -35,6 +37,20 @@ enum Commands {
 fn main() -> Result<()> {
     let cli = Cli::parse();
     match cli.command {
+        Commands::Update => {
+            let mut updater = AxoUpdater::new_for("csvsentry-cli");
+            updater.load_receipt()
+                .context("no install receipt found; `csvsentry update` works for shell/Powershell installs only")?;
+
+            if !updater.check_receipt_is_for_this_executable()? {
+                anyhow::bail!("this binary was not installed by the csvsentry installer")
+            }
+
+            match updater.run_sync()? {
+                Some(result) => println!("Updated csvsentry to {}", result.new_version),
+                None => println!("csvsentry is already up to date"),
+            }
+        }
         Commands::Generate {
             csv_filepath,
             settings_output_path,
