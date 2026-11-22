@@ -12,6 +12,7 @@ pub enum ColumnType {
     PhoneNumber,
     Website,
     Salutation,
+    Boolean,
 }
 
 impl ColumnType {
@@ -108,6 +109,20 @@ impl ColumnType {
                     return Err(format!("invalid URL: {val}"));
                 }
                 Ok(())
+            }
+            ColumnType::Boolean => {
+                const TRUE_VALUES: &[&str] = &["true", "wahr", "ja", "j", "1", "y", "yes"];
+                const FALSE_VALUES: &[&str] = &["false", "falsch", "nein", "n", "0", "no"];
+
+                let normalized = val.trim().to_lowercase();
+
+                if TRUE_VALUES.contains(&normalized.as_str())
+                    || FALSE_VALUES.contains(&normalized.as_str())
+                {
+                    Ok(())
+                } else {
+                    Err(format!("invalid boolean value: {:?}", val))
+                }
             }
         }
     }
