@@ -292,3 +292,44 @@ fn test_boolean() {
         assert!(ColumnType::Boolean.validate(v).is_err(), "{v}");
     }
 }
+
+#[test]
+fn test_date() {
+    let valid = vec!["", "2024-01-01", "2024-1-1", "2020-02-29", "1999-12-31"];
+    let invalid = vec![
+        "2024-13-01",
+        "2024-01-32",
+        "2021-02-29",
+        "2024/01/01",
+        "not-a-date",
+    ];
+    for v in valid {
+        assert!(ColumnType::Date.validate(v).is_ok(), "{v}");
+    }
+    for v in invalid {
+        assert!(ColumnType::Date.validate(v).is_err(), "{v}");
+    }
+}
+
+#[test]
+fn test_datetime() {
+    let valid = vec![
+        "",
+        "2024-01-01T12:00:00",
+        "2024-1-1T1:2:3",
+        "2024-01-01T00:00:00Z",
+        "2024-01-01 12:00:00",
+    ];
+    let invalid = vec![
+        "2024-01-01",
+        "2024-01-01 12:00",
+        "2024-01-01T24:00:00",
+        "bad",
+    ];
+    for v in valid {
+        assert!(ColumnType::DateTime.validate(v).is_ok(), "{v}");
+    }
+    for v in invalid {
+        assert!(ColumnType::DateTime.validate(v).is_err(), "{v}");
+    }
+}
