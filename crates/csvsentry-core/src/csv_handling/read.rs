@@ -1,5 +1,5 @@
 use crate::csv_handling::csv_settings::CsvSettings;
-use crate::domain::validation_configuration::{Row, ValidationConfig};
+use crate::domain::validation_configuration::{Row, RowIndex, ValidationConfig};
 use crate::validation::validation_result::{ValidationResult, validate_rows};
 use anyhow::{Ok, Result};
 use std::fs::File;
@@ -45,8 +45,13 @@ pub fn read_csv_headers(path: &Path, delimiter: u8) -> Result<Vec<String>> {
     Ok(headers.iter().map(str::to_owned).collect())
 }
 
-pub fn read_sample(settings: CsvSettings, size: Option<usize>) -> Result<Vec<Row>> {
+pub fn read_sample(
+    settings: CsvSettings,
+    row_index: Option<RowIndex>,
+    size: Option<usize>,
+) -> Result<Vec<Row>> {
     let file = File::open(settings.file_path)?;
+    let index = row_index.unwrap_or_default();
     let mut reader = csv::ReaderBuilder::new()
         .has_headers(settings.has_header)
         .delimiter(settings.delimiter)
@@ -59,7 +64,7 @@ pub fn read_sample(settings: CsvSettings, size: Option<usize>) -> Result<Vec<Row
         .map(|(number, record)| {
             let record = record?;
             Ok(Row {
-                number,
+                number: index.from_csv_reader(number, settings.has_header),
                 cells: record.iter().map(str::to_owned).collect(),
             })
         })
