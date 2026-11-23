@@ -39,7 +39,7 @@ enum Commands {
         #[arg(short, long)]
         output_filepath: Option<PathBuf>,
 
-        #[arg(short, long, value_enum, default_value = "jsonl")]
+        #[arg(short, long, value_enum, default_value = "json")]
         format: OutputFormat,
 
         #[arg(short, long, default_value = "false")]
