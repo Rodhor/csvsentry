@@ -70,8 +70,11 @@ fn main() -> Result<()> {
             delimiter,
         } => {
             println!("Generating baseconfiguration for {:?}", csv_filepath);
-            let output_path =
-                resolve_json_output_path(settings_output_path, "settings".to_string())?;
+            let output_path = resolve_json_output_path(
+                settings_output_path,
+                OutputFormat::Json,
+                "settings".to_string(),
+            )?;
 
             let delimiter = u8::try_from(delimiter).map_err(|_| {
                 anyhow::anyhow!("delimter '{}' is not a valid ASCII byte", delimiter)
@@ -90,7 +93,7 @@ fn main() -> Result<()> {
                 settings_filepath
             );
 
-            let path = resolve_json_output_path(output_filepath, "results".to_string())?;
+            let path = resolve_json_output_path(output_filepath, format, "results".to_string())?;
             let results = validate_from_settings(settings_filepath)?;
             write_results(results, &path, format, verbose_result_output)?;
             println!("Validation finished, result was written to {:?}", path);

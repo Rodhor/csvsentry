@@ -5,13 +5,20 @@ use std::{
 
 use anyhow::Result;
 
+use crate::helpers::output::OutputFormat;
+
 pub fn resolve_json_output_path(
     filepath: Option<PathBuf>,
+    format: OutputFormat,
     default_name: String,
 ) -> Result<PathBuf> {
+    let ext = match format {
+        OutputFormat::Json => ".json",
+        OutputFormat::Jsonl => ".jsonl",
+    };
     let mut path = match filepath {
         Some(path) => path,
-        None => env::current_dir()?.join(format!("{default_name}.json")),
+        None => env::current_dir()?.join(format!("{default_name}.{ext}")),
     };
 
     if path.is_dir() || has_trailing_separater(&path) {
