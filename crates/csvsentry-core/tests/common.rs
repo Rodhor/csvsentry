@@ -1,6 +1,8 @@
 #![allow(dead_code)]
 
-use csvsentry_core::domain::validation_configuration::{ColumnConfig, Row, ValidationConfig};
+use csvsentry_core::domain::validation_configuration::{
+    ColumnConfig, Row, RowIndex, ValidationConfig,
+};
 use csvsentry_core::validation::column_types::ColumnType;
 
 pub fn people_csv() -> &'static str {
@@ -44,6 +46,7 @@ pub fn matching_types() -> (&'static str, ValidationConfig) {
     (
         people_csv(),
         ValidationConfig {
+            prefered_index: RowIndex::CsvIndex,
             columns: vec![
                 ColumnConfig {
                     header: "id".to_string(),
@@ -83,6 +86,7 @@ pub fn swapped_mail_and_phone() -> (&'static str, ValidationConfig) {
     (
         people_csv(),
         ValidationConfig {
+            prefered_index: RowIndex::CsvIndex,
             columns: vec![
                 ColumnConfig {
                     header: "id".to_string(),
@@ -122,6 +126,7 @@ pub fn matching_types_bad_cells() -> (&'static str, ValidationConfig) {
     (
         people_csv_bad_cells(),
         ValidationConfig {
+            prefered_index: RowIndex::CsvIndex,
             columns: vec![
                 ColumnConfig {
                     header: "id".to_string(),
@@ -161,6 +166,7 @@ pub fn matching_types_rows() -> (Vec<Row>, ValidationConfig) {
     (
         rows_from(people_csv()),
         ValidationConfig {
+            prefered_index: RowIndex::CsvIndex,
             columns: vec![
                 ColumnConfig {
                     header: "id".to_string(),
@@ -200,6 +206,7 @@ pub fn matching_types_bad_cells_row() -> (Vec<Row>, ValidationConfig) {
     (
         rows_from(people_csv_bad_cells()),
         ValidationConfig {
+            prefered_index: RowIndex::CsvIndex,
             columns: vec![
                 ColumnConfig {
                     header: "id".to_string(),
@@ -239,6 +246,7 @@ pub fn swapped_mail_and_phone_row() -> (Vec<Row>, ValidationConfig) {
     (
         rows_from(people_csv()),
         ValidationConfig {
+            prefered_index: RowIndex::CsvIndex,
             columns: vec![
                 ColumnConfig {
                     header: "id".to_string(),
@@ -279,6 +287,7 @@ pub fn whitespace_and_missing_cells() -> (Vec<Row>, ValidationConfig) {
     (
         rows_from(people_csv_empty_or_whitespace_cells()),
         ValidationConfig {
+            prefered_index: RowIndex::CsvIndex,
             columns: vec![
                 ColumnConfig {
                     header: "id".to_string(),
@@ -318,6 +327,7 @@ pub fn whitespace_and_missing_cells_part_2() -> (Vec<Row>, ValidationConfig) {
     (
         rows_from(people_csv_empty_or_whitespace_cells()),
         ValidationConfig {
+            prefered_index: RowIndex::CsvIndex,
             columns: vec![
                 ColumnConfig {
                     header: "id".to_string(),

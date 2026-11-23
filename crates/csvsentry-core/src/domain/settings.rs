@@ -1,6 +1,6 @@
 use crate::{
     csv_handling::{self, csv_settings::CsvSettings},
-    domain::validation_configuration::{ColumnConfig, ValidationConfig},
+    domain::validation_configuration::{ColumnConfig, RowIndex, ValidationConfig},
     validation::column_types::ColumnType,
 };
 use anyhow::{Context, Result};
@@ -71,6 +71,7 @@ impl Settings {
                 has_header: true,
             },
             validation_settings: ValidationConfig {
+                prefered_index: RowIndex::default(),
                 columns: column_settings,
             },
         };

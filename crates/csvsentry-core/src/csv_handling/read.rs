@@ -9,12 +9,13 @@ pub fn validate_csv(
     settings: CsvSettings,
     config: ValidationConfig,
 ) -> Result<Vec<ValidationResult>> {
-    let rows = read_csv(settings)?;
+    let rows = read_csv(settings, &config)?;
     Ok(validate_rows(rows.iter(), &config))
 }
 
-pub fn read_csv(settings: CsvSettings) -> Result<Vec<Row>> {
+pub fn read_csv(settings: CsvSettings, config: &ValidationConfig) -> Result<Vec<Row>> {
     let file = File::open(settings.file_path)?;
+    let index = config.prefered_index;
     let mut reader = csv::ReaderBuilder::new()
         .has_headers(settings.has_header)
         .delimiter(settings.delimiter)
@@ -26,7 +27,7 @@ pub fn read_csv(settings: CsvSettings) -> Result<Vec<Row>> {
         .map(|(number, record)| {
             let record = record?;
             Ok(Row {
-                number,
+                number: index.from_csv_reader(number, settings.has_header),
                 cells: record.iter().map(str::to_owned).collect(),
             })
         })

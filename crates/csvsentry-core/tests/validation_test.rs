@@ -1,4 +1,4 @@
-use csvsentry_core::domain::validation_configuration::Row;
+use csvsentry_core::domain::validation_configuration::{Row, RowIndex};
 use csvsentry_core::validation::column_types::ColumnType;
 use csvsentry_core::validation::validation_result::{
     ValidationStatus, validate_row, validate_rows,
@@ -332,4 +332,12 @@ fn test_datetime() {
     for v in invalid {
         assert!(ColumnType::DateTime.validate(v).is_err(), "{v}");
     }
+}
+
+#[test]
+fn csv_reader_offsets() {
+    assert_eq!(RowIndex::CsvIndex.from_csv_reader(4, true), 4);
+    assert_eq!(RowIndex::CsvIndexHeaderOffset.from_csv_reader(4, true), 5);
+    assert_eq!(RowIndex::ExcelIndex.from_csv_reader(4, true), 6);
+    assert_eq!(RowIndex::ExcelIndex.from_csv_reader(4, false), 5);
 }
