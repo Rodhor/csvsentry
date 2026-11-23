@@ -5,7 +5,8 @@ All notable changes to the `csvsentry` CLI are documented here.
 ## [Unreleased]
 
 - Added option to output verbose results instead of it being the default
--
+- Added RowIndex Enum - allows for defining the "index type" - with or without header and with a 1-Based indexing for later use in excel
+- Added sample read - will later be expanded to exploration
 
 ## [0.1.1] - 2026-11-23
 
