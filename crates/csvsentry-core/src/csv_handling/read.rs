@@ -44,3 +44,24 @@ pub fn read_csv_headers(path: &Path, delimiter: u8) -> Result<Vec<String>> {
     let headers = reader.headers()?;
     Ok(headers.iter().map(str::to_owned).collect())
 }
+
+pub fn read_sample(settings: CsvSettings, size: Option<usize>) -> Result<Vec<Row>> {
+    let file = File::open(settings.file_path)?;
+    let mut reader = csv::ReaderBuilder::new()
+        .has_headers(settings.has_header)
+        .delimiter(settings.delimiter)
+        .from_reader(file);
+
+    reader
+        .records()
+        .take(size.unwrap_or(20))
+        .enumerate()
+        .map(|(number, record)| {
+            let record = record?;
+            Ok(Row {
+                number,
+                cells: record.iter().map(str::to_owned).collect(),
+            })
+        })
+        .collect()
+}
