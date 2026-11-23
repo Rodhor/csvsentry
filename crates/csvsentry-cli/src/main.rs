@@ -41,6 +41,9 @@ enum Commands {
 
         #[arg(short, long, value_enum, default_value = "jsonl")]
         format: OutputFormat,
+
+        #[arg(short, long, default_value = "false")]
+        verbose_result_output: bool,
     },
 }
 
@@ -80,6 +83,7 @@ fn main() -> Result<()> {
             settings_filepath,
             output_filepath,
             format,
+            verbose_result_output,
         } => {
             println!(
                 "Starting validation based on settings from {:?}",
@@ -88,7 +92,7 @@ fn main() -> Result<()> {
 
             let path = resolve_json_output_path(output_filepath, "results".to_string())?;
             let results = validate_from_settings(settings_filepath)?;
-            write_results(results, &path, format)?;
+            write_results(results, &path, format, verbose_result_output)?;
             println!("Validation finished, result was written to {:?}", path);
         }
     }
