@@ -2,6 +2,17 @@
 
 All notable changes to the `csvsentry` CLI are documented here.
 
+## [Unreleased]
+
+### Added
+-
+
+### Changed
+-
+
+### Fixed
+- 
+
 ## [0.3.0] - 2026-11-25
 
 ### Added
