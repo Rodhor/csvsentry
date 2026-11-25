@@ -5,7 +5,7 @@ use strum::{EnumIter, IntoEnumIterator};
 use url::Url;
 use validator::ValidateEmail;
 
-#[derive(Debug, Deserialize, Serialize, EnumIter)]
+#[derive(Debug, Deserialize, Serialize, EnumIter, Clone,PartialEq)]
 pub enum ColumnType {
     Text(Option<Vec<String>>),
     Integer,
