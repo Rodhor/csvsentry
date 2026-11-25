@@ -15,7 +15,7 @@ pub enum RowIndex {
 }
 
 impl RowIndex {
-    pub fn from_csv_reader(&self, index: usize, has_header: bool) -> usize {
+    pub fn from_csv_reader(self, index: usize, has_header: bool) -> usize {
         match self {
             RowIndex::CsvIndex => index,
             RowIndex::CsvIndexHeaderOffset => index + 1,
