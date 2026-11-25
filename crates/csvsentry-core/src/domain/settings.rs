@@ -50,6 +50,12 @@ impl Settings {
         output_path: impl AsRef<Path>,
         delimiter: u8,
     ) -> Result<()> {
+        Self::create_settings_from_csv_file_with_options(csv_path, output_path, delimiter, false, None)
+    }
+        csv_path: impl AsRef<Path>,
+        output_path: impl AsRef<Path>,
+        delimiter: u8,
+    ) -> Result<()> {
         let csv_path = csv_path.as_ref();
         let csv_header = csv_handling::read::read_csv_headers(csv_path, delimiter)?;
 
