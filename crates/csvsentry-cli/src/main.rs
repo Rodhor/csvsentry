@@ -5,7 +5,7 @@ use csvsentry_core::{
     domain::settings::Settings, services::validation_service::validate_from_settings,
 };
 use std::path::PathBuf;
-
+use std::sync::Arc;
 use crate::helpers::{
     file_paths::resolve_json_output_path,
     output::{OutputFormat, write_results},
@@ -31,6 +31,12 @@ enum Commands {
 
         #[arg(short, long, default_value_t = ',')]
         delimiter: char,
+
+        #[arg(short, long, default_value = "false")]
+        explore_types: bool,
+
+        #[arg(short, long)]
+        sample_size: Option<usize>
     },
     Validate {
         #[arg(short, long)]
@@ -68,6 +74,9 @@ fn main() -> Result<()> {
             csv_filepath,
             settings_output_path,
             delimiter,
+            explore_types,
+            sample_size,
+
         } => {
             println!("Generating baseconfiguration for {:?}", csv_filepath);
             let output_path = resolve_json_output_path(
@@ -80,7 +89,7 @@ fn main() -> Result<()> {
                 anyhow::anyhow!("delimter '{}' is not a valid ASCII byte", delimiter)
             })?;
 
-            Settings::create_settings_from_csv_file(csv_filepath, output_path, delimiter)?
+            Settings::create_settings_from_csv_file_with_options(csv_filepath, output_path, delimiter, explore_types, sample_size)?
         }
         Commands::Validate {
             settings_filepath,
