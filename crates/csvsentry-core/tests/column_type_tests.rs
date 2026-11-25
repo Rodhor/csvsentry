@@ -14,7 +14,7 @@ fn test_integer() {
         "-1",
         "+1",
     ];
-    let invalid_cases = vec!["12a", "!12", "!_12", "9999999999999999999999999999"];
+    let invalid_cases = vec!["12a", "!12", "!_12", "9999999999999999999999999999", "1.20"];
 
     for val in valid_cases {
         assert!(
