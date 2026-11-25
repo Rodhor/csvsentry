@@ -6,6 +6,7 @@ use crate::{
 use anyhow::{Context, Result};
 use serde::{Deserialize, Serialize};
 use std::{fs, path::Path};
+use crate::csv_handling::exploration::explore_csv_column_types;
 
 #[derive(Debug, Deserialize, Serialize)]
 pub struct Settings {
@@ -45,6 +46,7 @@ impl Store for Settings {
 }
 
 impl Settings {
+
     pub fn create_settings_from_csv_file(
         csv_path: impl AsRef<Path>,
         output_path: impl AsRef<Path>,
@@ -52,23 +54,53 @@ impl Settings {
     ) -> Result<()> {
         Self::create_settings_from_csv_file_with_options(csv_path, output_path, delimiter, false, None)
     }
+
+    pub fn create_settings_from_csv_file_with_options(
         csv_path: impl AsRef<Path>,
         output_path: impl AsRef<Path>,
         delimiter: u8,
+        explore_types: bool,
+        sample_size: Option<usize>
     ) -> Result<()> {
         let csv_path = csv_path.as_ref();
         let csv_header = csv_handling::read::read_csv_headers(csv_path, delimiter)?;
 
-        let column_settings = csv_header
-            .iter()
-            .enumerate()
-            .map(|(index, header)| ColumnConfig {
-                header: header.to_owned(),
-                index,
-                expected_type: ColumnType::Text(None),
-                required: true,
-            })
-            .collect();
+        let column_settings: Vec<ColumnConfig> = if explore_types {
+            let csv_settings = CsvSettings { file_path: csv_path.to_path_buf(), delimiter, has_header: true };
+            let explored = explore_csv_column_types(csv_settings, sample_size)?;
+            csv_header
+                .iter()
+                .enumerate()
+                .map(|(index, header)| {
+                    let e = explored.get(index);
+                    let expected_type = e
+                        .and_then(|e| {
+                            e.possible_types
+                                .iter()
+                                .find(|t| !matches!(t, ColumnType::Text(None)))
+                                .cloned()
+                        })
+                        .unwrap_or(ColumnType::Text(None));
+                    ColumnConfig {
+                        header: header.to_owned(),
+                        index,
+                        expected_type,
+                        required: e.map(|e| e.required).unwrap_or(true),
+                    }
+                })
+                .collect()
+        } else {
+            csv_header
+                .iter()
+                .enumerate()
+                .map(|(index, header)| ColumnConfig {
+                    header: header.to_owned(),
+                    index,
+                    expected_type: ColumnType::Text(None),
+                    required: true,
+                })
+                .collect()
+        };
 
         let settings = Settings {
             csv_settings: CsvSettings {
@@ -82,6 +114,8 @@ impl Settings {
             },
         };
 
+
         settings.save(output_path)
     }
+
 }
