@@ -1,10 +1,63 @@
 #![allow(dead_code)]
 
+use std::fs;
+use std::path::PathBuf;
+use tempfile::TempDir;
 use csvsentry_core::domain::validation_configuration::{
     ColumnConfig, Row, RowIndex, ValidationConfig,
 };
 use csvsentry_core::validation::column_types::ColumnType;
 
+
+pub fn create_large_csv(rows: usize) -> String {
+    let mut s = String::from("id,name,age,mail,phone\n");
+    for i in 0..rows {
+        use std::fmt::Write as _;
+        writeln!(s,"{i},User{i},{},user{i}@example.com,+49 123 456789", 20 + (i % 60)).unwrap();
+    }
+    s
+}
+
+pub fn regular_csv() -> &'static str {
+    "\
+id,name,age,mail,phone
+1,Alice,30,alice@example.com,+49 123 456789
+2,Bob,25,bob@example.com,+49 123 456789
+3,Charlie,35,charlie@example.com,555-0200
+"
+}
+
+pub fn custom_delimiter_csv() -> &'static str {
+    "\
+id^name^age^mail^phone
+1^Alice^30^alice@example.com^+49 123 456789
+2^Bob^25^bob@example.com^+49 123 456789
+3^Charlie^35^charlie@example.com^555-0200
+"
+}
+
+pub fn custom_delimiter_no_header_csv() -> &'static str {
+    "\
+1^Alice^30^alice@example.com^+49 123 456789
+2^Bob^25^bob@example.com^+49 123 456789
+3^Charlie^35^charlie@example.com^555-0200
+"
+}
+
+pub fn prepare_file(content: &'static str) -> (TempDir,PathBuf) {
+    let dir = TempDir::new().unwrap();
+    let path = dir.path().join("data.csv");
+    fs::write(&path, content).unwrap();
+
+    (dir,path)
+}
+
+pub fn prepare_bytes(content: &[u8]) -> (TempDir, PathBuf) {
+    let dir = TempDir::new().unwrap();
+    let path = dir.path().join("data.csv");
+    fs::write(&path, content).unwrap();
+    (dir,path)
+}
 pub fn people_csv() -> &'static str {
     "\
 id,name,age,mail,phone
