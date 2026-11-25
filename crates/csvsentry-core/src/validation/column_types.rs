@@ -1,10 +1,11 @@
 use anyhow::Result;
 use chrono::{DateTime, NaiveDate, NaiveDateTime};
 use serde::{Deserialize, Serialize};
+use strum::{EnumIter, IntoEnumIterator};
 use url::Url;
 use validator::ValidateEmail;
 
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Debug, Deserialize, Serialize, EnumIter)]
 pub enum ColumnType {
     Text(Option<Vec<String>>),
     Integer,
@@ -144,5 +145,15 @@ impl ColumnType {
                 }
             }
         }
+    }
+
+    pub fn explore_possible_types(val: &str) -> Vec<ColumnType> {
+        if val.trim().is_empty() {
+            return Vec::new();
+        }
+
+        Self::iter()
+            .filter(|candidate| candidate.validate(val).is_ok())
+            .collect()
     }
 }
