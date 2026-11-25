@@ -73,6 +73,11 @@ impl Settings {
                 .enumerate()
                 .map(|(index, header)| {
                     let e = explored.get(index);
+
+                    // Precedence follows ColumnType variant order (Text is skipped so it never
+                    // wins for a non-empty column unless it is the only valid option);
+                    // an all-empty column yields an empty
+                    // possible_types and falls back to Text(None) below.
                     let expected_type = e
                         .and_then(|e| {
                             e.possible_types

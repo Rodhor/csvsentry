@@ -6,6 +6,7 @@ use crate::domain::validation_configuration::RowIndex;
 use crate::validation::column_types::ColumnType;
 
 pub struct ExplorationResult {
+    pub has_values: bool,
     pub possible_types: Vec<ColumnType>,
     pub required: bool
 }
@@ -18,6 +19,7 @@ pub fn explore_csv_column_types(settings: CsvSettings, sample_size: Option<usize
     for col_idx in 0..cells_count {
         let mut possible: Vec<ColumnType> = ColumnType::iter().collect();
         let mut required = true;
+        let mut has_values = false;
         for row in &sample {
             let cell = row.cells.get(col_idx).map(String::as_str).unwrap_or("");
             if cell.trim().is_empty() {
@@ -25,9 +27,14 @@ pub fn explore_csv_column_types(settings: CsvSettings, sample_size: Option<usize
                 continue;
             }
             let cell_types = ColumnType::explore_possible_types(cell);
+            has_values = true;
             possible.retain(|t|cell_types.contains(t))
         }
-        result.push(ExplorationResult{ possible_types: possible, required })
+
+        if !has_values {
+            possible.clear();
+        }
+        result.push(ExplorationResult{ possible_types: possible, required, has_values })
     }
     Ok(result)
 }
