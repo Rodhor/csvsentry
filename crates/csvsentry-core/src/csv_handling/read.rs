@@ -59,7 +59,7 @@ pub fn read_sample(
 
     reader
         .records()
-        .take(size.unwrap_or(20))
+        .take(size.unwrap_or(50))
         .enumerate()
         .map(|(number, record)| {
             let record = record?;
