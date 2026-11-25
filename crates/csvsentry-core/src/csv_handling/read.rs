@@ -47,11 +47,10 @@ pub fn read_csv_headers(path: &Path, delimiter: u8) -> Result<Vec<String>> {
 
 pub fn read_sample(
     settings: CsvSettings,
-    row_index: Option<RowIndex>,
+    row_index: RowIndex,
     size: Option<usize>,
 ) -> Result<Vec<Row>> {
     let file = File::open(settings.file_path)?;
-    let index = row_index.unwrap_or_default();
     let mut reader = csv::ReaderBuilder::new()
         .has_headers(settings.has_header)
         .delimiter(settings.delimiter)
@@ -64,7 +63,7 @@ pub fn read_sample(
         .map(|(number, record)| {
             let record = record?;
             Ok(Row {
-                number: index.from_csv_reader(number, settings.has_header),
+                number: row_index.from_csv_reader(number, settings.has_header),
                 cells: record.iter().map(str::to_owned).collect(),
             })
         })
