@@ -2,10 +2,21 @@
 
 All notable changes to the `csvsentry` CLI are documented here.
 
-## [Unreleased]
+## [0.3.0] - 2026-11-25
 
-- Updated path resolver to match format
-- Added settings creation with exploration option
+### Added
+- Exploration tests covering type inference, required/optional columns, sampling, delimiters, and error cases.
+- Settings generation tests (with and without exploration).
+- `has_values` flag on `ExplorationResult` to distinguish empty columns.
+- CLI `Generate` now uses exploration when `--explore-types` is set.
+
+### Changed
+- Type inference fallback: columns with no non-empty sampled values now default to `Text(None)`.
+- Type precedence follows `ColumnType` variant order (documented in code); `Text(None)` is skipped for non-empty columns.
+- All-empty columns yield an empty `possible_types` list instead of all variants.
+
+### Fixed
+- (keep existing) path resolver to match format
 
 ## [0.2.0] - 2026-11-23
 
