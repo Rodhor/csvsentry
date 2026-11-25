@@ -4,7 +4,8 @@ All notable changes to the `csvsentry` CLI are documented here.
 
 ## [Unreleased]
 
--
+- Updated path resolver to match format
+- Added settings creation with exploration option
 
 ## [0.2.0] - 2026-11-23
 
